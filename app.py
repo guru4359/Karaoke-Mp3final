@@ -10,7 +10,7 @@ os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return render_template('index.html', output_url=None)
 
 @app.route('/upload', methods=['POST'])
 def upload():
@@ -24,10 +24,12 @@ def upload():
         return redirect(url_for('index'))
 
     filename = secure_filename(file.filename)
-    filepath = os.path.join(app.config['UPLOAD_FOLDER'], f"{uuid.uuid4()}_{filename}")
+    unique_name = f"{uuid.uuid4()}_{filename}"
+    filepath = os.path.join(app.config['UPLOAD_FOLDER'], unique_name)
     file.save(filepath)
-    return send_file(filepath, as_attachment=True)
+    return render_template('index.html', output_url=url_for('download_file', filename=unique_name))
 
-if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host="0.0.0.0", port=port)
+@app.route('/download/<filename>')
+def download_file(filename):
+    filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+    return send_file(filepath, as_attachment=True)
