@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head><title>Karaoke MP3 Upload</title></head>
+<body style="font-family:sans-serif; padding:30px;">
+<h2>🎵 Upload Your MP3 File for Karaoke Processing</h2>
+{% with messages = get_flashed_messages() %}
+  {% for msg in messages %}
+    <p style="color:red;">{{ msg }}</p>
+  {% endfor %}
+{% endwith %}
+<form method="POST" action="/upload" enctype="multipart/form-data">
+  <input type="file" name="audio_file" accept=".mp3" required><br><br>
+  <button type="submit">Upload MP3</button>
+</form>
+</body>
+</html>
